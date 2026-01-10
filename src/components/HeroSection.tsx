@@ -17,8 +17,8 @@ const HeroSection = () => {
           <div className="water-glass rounded-[2rem] overflow-hidden">
             <div className="relative aspect-[4/3] lg:aspect-[3/4]">
               <img
-                src="https://images.unsplash.com/photo-1497032628192-86f99bcd76bc?w=1920&q=80"
-                alt="Modern workspace with creative elements representing perspective and inspiration"
+                src="https://images.unsplash.com/photo-1677442136019-21780ecad995?w=1920&q=80"
+                alt="AI neural network visualization representing artificial intelligence and innovation"
                 className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105"
                 loading="eager"
               />
@@ -35,7 +35,7 @@ const HeroSection = () => {
               </div>
               <div>
                 <p className="text-xs text-muted-foreground">Featured</p>
-                <p className="text-sm font-semibold">Premium Content</p>
+                <p className="text-sm font-semibold">AI Insights</p>
               </div>
             </div>
           </div>
@@ -46,18 +46,18 @@ const HeroSection = () => {
           {/* Badge */}
           <div className="inline-flex w-fit">
             <span className="glass-subtle px-4 py-2 rounded-full text-sm font-medium text-foreground/80 animate-slide-down">
-              ✨ Welcome to Perspective
+              ✨ Welcome to AiSphere Daily
             </span>
           </div>
 
           {/* Headline */}
           <div className="space-y-4 lg:space-y-6">
             <h1 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold leading-[1.05] tracking-tight animate-slide-up">
-              Journey Through
-              <span className="block gradient-text">Life's Spectrum</span>
+              Explore the Future
+              <span className="block gradient-text">of Intelligence</span>
             </h1>
             <p className="text-muted-foreground text-lg md:text-xl leading-relaxed max-w-xl animate-slide-up stagger-1">
-              A curated realm of reflection, inspiration, and discovery. Where thoughtful words illuminate paths of meaning.
+              Your daily source for AI breakthroughs, machine learning insights, and the technology shaping tomorrow.
             </p>
           </div>
 

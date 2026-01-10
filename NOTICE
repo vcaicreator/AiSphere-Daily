@@ -1,0 +1,214 @@
+================================================================================
+                              AiSphere Daily
+                     Third-Party Software Attribution Notice
+================================================================================
+
+Copyright (c) 2025 AiSphere Daily. All Rights Reserved.
+
+This document provides attribution for third-party open-source software 
+components used in the development of AiSphere Daily's website and platform.
+
+IMPORTANT: These third-party licenses apply ONLY to their respective components
+and do NOT grant any rights to use, copy, modify, or distribute AiSphere Daily's
+proprietary content, branding, designs, articles, or original works. See the
+LICENSE file for the proprietary license governing all original AiSphere Daily
+content.
+
+================================================================================
+                           OPEN SOURCE COMPONENTS
+================================================================================
+
+--------------------------------------------------------------------------------
+React
+--------------------------------------------------------------------------------
+Copyright (c) Meta Platforms, Inc. and affiliates.
+License: MIT License
+https://github.com/facebook/react
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+--------------------------------------------------------------------------------
+Vite
+--------------------------------------------------------------------------------
+Copyright (c) 2019-present, Yuxi (Evan) You and Vite contributors
+License: MIT License
+https://github.com/vitejs/vite
+
+--------------------------------------------------------------------------------
+Tailwind CSS
+--------------------------------------------------------------------------------
+Copyright (c) Tailwind Labs, Inc.
+License: MIT License
+https://github.com/tailwindlabs/tailwindcss
+
+--------------------------------------------------------------------------------
+Radix UI
+--------------------------------------------------------------------------------
+Copyright (c) 2022 WorkOS
+License: MIT License
+https://github.com/radix-ui/primitives
+
+Used components:
+- @radix-ui/react-accordion
+- @radix-ui/react-alert-dialog
+- @radix-ui/react-avatar
+- @radix-ui/react-checkbox
+- @radix-ui/react-dialog
+- @radix-ui/react-dropdown-menu
+- @radix-ui/react-label
+- @radix-ui/react-navigation-menu
+- @radix-ui/react-popover
+- @radix-ui/react-progress
+- @radix-ui/react-scroll-area
+- @radix-ui/react-select
+- @radix-ui/react-separator
+- @radix-ui/react-slider
+- @radix-ui/react-switch
+- @radix-ui/react-tabs
+- @radix-ui/react-toast
+- @radix-ui/react-toggle
+- @radix-ui/react-tooltip
+
+--------------------------------------------------------------------------------
+Lucide Icons
+--------------------------------------------------------------------------------
+Copyright (c) 2020, Lucide Contributors
+License: ISC License
+https://github.com/lucide-icons/lucide
+
+--------------------------------------------------------------------------------
+React Router
+--------------------------------------------------------------------------------
+Copyright (c) React Training LLC
+License: MIT License
+https://github.com/remix-run/react-router
+
+--------------------------------------------------------------------------------
+TanStack Query (React Query)
+--------------------------------------------------------------------------------
+Copyright (c) 2021-present Tanner Linsley
+License: MIT License
+https://github.com/TanStack/query
+
+--------------------------------------------------------------------------------
+date-fns
+--------------------------------------------------------------------------------
+Copyright (c) 2021 Sasha Koss and Lesha Koss
+License: MIT License
+https://github.com/date-fns/date-fns
+
+--------------------------------------------------------------------------------
+class-variance-authority
+--------------------------------------------------------------------------------
+Copyright (c) 2022 Joe Bell
+License: Apache-2.0 License
+https://github.com/joe-bell/cva
+
+--------------------------------------------------------------------------------
+clsx
+--------------------------------------------------------------------------------
+Copyright (c) Luke Edwards <luke.edwards05@gmail.com>
+License: MIT License
+https://github.com/lukeed/clsx
+
+--------------------------------------------------------------------------------
+tailwind-merge
+--------------------------------------------------------------------------------
+Copyright (c) 2021 Dany Castillo
+License: MIT License
+https://github.com/dcastil/tailwind-merge
+
+--------------------------------------------------------------------------------
+Sonner
+--------------------------------------------------------------------------------
+Copyright (c) 2023 Emil Kowalski
+License: MIT License
+https://github.com/emilkowalski/sonner
+
+--------------------------------------------------------------------------------
+Recharts
+--------------------------------------------------------------------------------
+Copyright (c) 2015-present recharts
+License: MIT License
+https://github.com/recharts/recharts
+
+--------------------------------------------------------------------------------
+Embla Carousel
+--------------------------------------------------------------------------------
+Copyright (c) 2019 David Jerleke
+License: MIT License
+https://github.com/davidjerleke/embla-carousel
+
+--------------------------------------------------------------------------------
+React Hook Form
+--------------------------------------------------------------------------------
+Copyright (c) 2019-present Beier (Bill) Luo
+License: MIT License
+https://github.com/react-hook-form/react-hook-form
+
+--------------------------------------------------------------------------------
+Zod
+--------------------------------------------------------------------------------
+Copyright (c) 2020 Colin McDonnell
+License: MIT License
+https://github.com/colinhacks/zod
+
+--------------------------------------------------------------------------------
+Vaul
+--------------------------------------------------------------------------------
+Copyright (c) 2023 Emil Kowalski
+License: MIT License
+https://github.com/emilkowalski/vaul
+
+================================================================================
+                              FONT ATTRIBUTION
+================================================================================
+
+--------------------------------------------------------------------------------
+Inter Font Family
+--------------------------------------------------------------------------------
+Copyright (c) 2016-2020 The Inter Project Authors
+License: SIL Open Font License, Version 1.1
+https://github.com/rsms/inter
+
+================================================================================
+                             IMAGE ATTRIBUTION
+================================================================================
+
+Stock images are used under license from Unsplash (https://unsplash.com).
+Individual photo credits are attributed in the content where displayed.
+
+================================================================================
+                          IMPORTANT LEGAL NOTICE
+================================================================================
+
+While the above components are licensed under open-source licenses that permit
+redistribution and modification, such permissions apply ONLY to those specific
+third-party components.
+
+ALL ORIGINAL CONTENT created by AiSphere Daily, including but not limited to:
+- Articles, news content, and editorial materials
+- Original graphics, images, and visual designs
+- Brand identity, logos, and trade dress
+- User interface designs and layouts
+- Custom code and implementations
+
+Remains the exclusive property of AiSphere Daily and is protected under the
+proprietary license detailed in the LICENSE file.
+
+NO PERMISSION is granted to use, copy, modify, or distribute any original
+AiSphere Daily content based on the licenses of these third-party components.
+
+================================================================================
+
+© 2025 AiSphere Daily. All Rights Reserved.
+
+For licensing inquiries: legal@aispheredaily.com

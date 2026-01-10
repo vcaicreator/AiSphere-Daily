@@ -1,14 +1,15 @@
 import { Instagram, Facebook, Linkedin, Twitter, Mail, MapPin } from "lucide-react";
+import logo from "@/assets/logo.png";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   const footerLinks = {
     explore: [
-      { label: "Wellness", href: "/wellness" },
-      { label: "Travel", href: "/travel" },
-      { label: "Creativity", href: "/creativity" },
-      { label: "Growth", href: "/growth" },
+      { label: "AI News", href: "/creativity" },
+      { label: "Machine Learning", href: "/wellness" },
+      { label: "Tech Trends", href: "/travel" },
+      { label: "Innovation", href: "/growth" },
     ],
     about: [
       { label: "Our Story", href: "/about" },
@@ -26,6 +27,11 @@ const Footer = () => {
       { label: "Privacy Policy", href: "/privacy" },
       { label: "Terms of Service", href: "/terms" },
       { label: "Cookie Policy", href: "/cookies" },
+      { label: "Copyright", href: "/copyright" },
+      { label: "DMCA", href: "/dmca" },
+      { label: "Disclaimer", href: "/disclaimer" },
+      { label: "Accessibility", href: "/accessibility" },
+      { label: "Usage Guidelines", href: "/usage-guidelines" },
     ],
   };
 
@@ -47,13 +53,13 @@ const Footer = () => {
           {/* Brand column */}
           <div className="col-span-2">
             <a href="/" className="inline-flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
-                <span className="text-primary-foreground font-bold text-lg">P</span>
+              <div className="w-10 h-10 rounded-xl overflow-hidden">
+                <img src={logo} alt="AiSphere Daily Logo" className="w-full h-full object-contain" />
               </div>
-              <span className="text-xl font-bold font-display">Perspective</span>
+              <span className="text-xl font-bold font-display">AiSphere Daily</span>
             </a>
             <p className="text-muted-foreground text-sm leading-relaxed mb-6 max-w-xs">
-              A curated destination for thoughtful content on wellness, travel, creativity, and personal growth.
+              Your premier destination for AI news, insights, and innovation. Stay ahead with the latest in artificial intelligence and technology.
             </p>
             {/* Social links */}
             <div className="flex items-center gap-3">
@@ -139,11 +145,11 @@ const Footer = () => {
         {/* Contact info */}
         <div className="flex flex-wrap items-center gap-6 py-6 border-t border-border/50 mb-6">
           <a 
-            href="mailto:hello@perspective-magazine.com" 
+            href="mailto:hello@aispheredaily.com" 
             className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
           >
             <Mail className="w-4 h-4" />
-            hello@perspective-magazine.com
+            hello@aispheredaily.com
           </a>
           <span className="flex items-center gap-2 text-sm text-muted-foreground">
             <MapPin className="w-4 h-4" />
@@ -154,10 +160,10 @@ const Footer = () => {
         {/* Bottom section */}
         <div className="flex flex-col md:flex-row items-center justify-between gap-4 pt-6 border-t border-border/50">
           <p className="text-sm text-muted-foreground">
-            © {currentYear} Perspective Magazine. All rights reserved.
+            © {currentYear} AiSphere Daily. All Rights Reserved.
           </p>
           <p className="text-xs text-muted-foreground">
-            Designed with ♥ for curious minds everywhere
+            AI News, Insights & Innovation
           </p>
         </div>
       </div>
