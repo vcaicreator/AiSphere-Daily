@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Mail, Eye, Trash2, CheckCircle, Clock, Search, MailOpen } from 'lucide-react';
+import { Mail, Eye, Trash2, CheckCircle, Clock, Search, MailOpen, RefreshCw } from 'lucide-react';
 import AdminLayout from '@/components/admin/AdminLayout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -27,6 +27,13 @@ const ContactSubmissions = () => {
   const [search, setSearch] = useState('');
   const [selectedSubmission, setSelectedSubmission] = useState<ContactSubmission | null>(null);
   const [adminNotes, setAdminNotes] = useState('');
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  const handleRefresh = async () => {
+    setIsRefreshing(true);
+    await fetchSubmissions();
+    setIsRefreshing(false);
+  };
 
   useEffect(() => {
     fetchSubmissions();
@@ -127,6 +134,15 @@ const ContactSubmissions = () => {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleRefresh}
+              disabled={isRefreshing}
+            >
+              <RefreshCw className={`w-4 h-4 mr-1 ${isRefreshing ? 'animate-spin' : ''}`} />
+              Refresh
+            </Button>
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               <Input

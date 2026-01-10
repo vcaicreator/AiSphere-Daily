@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Plus, Pencil, Trash2, User, X, Save, Mail } from 'lucide-react';
+import { Plus, Pencil, Trash2, User, X, Save, Mail, RefreshCw } from 'lucide-react';
 import AdminLayout from '@/components/admin/AdminLayout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -26,10 +26,17 @@ import {
 } from '@/components/ui/dialog';
 
 const AdminAuthors = () => {
-  const { data: authors, isLoading } = useAuthors();
+  const { data: authors, isLoading, refetch } = useAuthors();
   const createAuthor = useCreateAuthor();
   const updateAuthor = useUpdateAuthor();
   const deleteAuthor = useDeleteAuthor();
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  const handleRefresh = async () => {
+    setIsRefreshing(true);
+    await refetch();
+    setIsRefreshing(false);
+  };
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingAuthor, setEditingAuthor] = useState<Author | null>(null);
@@ -120,10 +127,21 @@ const AdminAuthors = () => {
               Manage your content authors and their profiles.
             </p>
           </div>
-          <Button onClick={openNewAuthorDialog}>
-            <Plus className="h-4 w-4 mr-2" />
-            Add Author
-          </Button>
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleRefresh}
+              disabled={isRefreshing}
+            >
+              <RefreshCw className={`w-4 h-4 mr-1 ${isRefreshing ? 'animate-spin' : ''}`} />
+              Refresh
+            </Button>
+            <Button onClick={openNewAuthorDialog}>
+              <Plus className="h-4 w-4 mr-2" />
+              Add Author
+            </Button>
+          </div>
         </div>
 
         {/* Authors Grid */}

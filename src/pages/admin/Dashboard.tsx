@@ -1,10 +1,11 @@
-import { FileText, Eye, Users, Tags, Image, Mail, Plus, Clock, TrendingUp, Calendar, Activity } from 'lucide-react';
+import { useState } from 'react';
+import { FileText, Eye, Users, Tags, Image, Mail, Plus, Clock, TrendingUp, Calendar, Activity, RefreshCw } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import AdminLayout from '@/components/admin/AdminLayout';
 import { useAllArticles } from '@/hooks/useArticles';
 import { useAuthors } from '@/hooks/useAuthors';
 import { useCategories } from '@/hooks/useCategories';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import {
@@ -18,11 +19,20 @@ import {
 import { usePageViewStats, useRealtimeVisitors } from '@/hooks/useAnalyticsData';
 
 const AdminDashboard = () => {
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const queryClient = useQueryClient();
+  
   const { data: articles, isLoading: articlesLoading } = useAllArticles();
   const { data: authors, isLoading: authorsLoading } = useAuthors();
   const { data: categories, isLoading: categoriesLoading } = useCategories();
   const { data: pageViewStats, isLoading: analyticsLoading } = usePageViewStats('7d');
   const { data: realtimeData } = useRealtimeVisitors();
+
+  const handleRefresh = async () => {
+    setIsRefreshing(true);
+    await queryClient.invalidateQueries();
+    setIsRefreshing(false);
+  };
   
   // Fetch subscriber count
   const { data: subscriberCount } = useQuery({
@@ -101,6 +111,19 @@ const AdminDashboard = () => {
 
   return (
     <AdminLayout title="Dashboard">
+      {/* Refresh Button */}
+      <div className="flex justify-end mb-6">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={handleRefresh}
+          disabled={isRefreshing}
+        >
+          <RefreshCw className={`w-4 h-4 mr-2 ${isRefreshing ? 'animate-spin' : ''}`} />
+          Refresh
+        </Button>
+      </div>
+
       {/* Stats Grid */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
         {stats.map((stat) => {

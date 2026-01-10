@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Image, Trash2, Copy, Search, Grid, List, Upload, X, CheckSquare, Square, Download } from 'lucide-react';
+import { Image, Trash2, Copy, Search, Grid, List, Upload, X, CheckSquare, Square, Download, RefreshCw } from 'lucide-react';
 import AdminLayout from '@/components/admin/AdminLayout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -31,6 +31,13 @@ const AdminMedia = () => {
   const [showUploadDialog, setShowUploadDialog] = useState(false);
   const [activeBucket, setActiveBucket] = useState<'article-images' | 'author-avatars'>('article-images');
   const [previewImage, setPreviewImage] = useState<MediaFile | null>(null);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  const handleRefresh = async () => {
+    setIsRefreshing(true);
+    await fetchFiles();
+    setIsRefreshing(false);
+  };
 
   const buckets = [
     { id: 'article-images', label: 'Article Images' },
@@ -136,6 +143,15 @@ const AdminMedia = () => {
     <AdminLayout title="Media Library">
       {/* Toolbar */}
       <div className="flex flex-wrap items-center gap-4 mb-6">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={handleRefresh}
+          disabled={isRefreshing}
+        >
+          <RefreshCw className={`w-4 h-4 mr-1 ${isRefreshing ? 'animate-spin' : ''}`} />
+          Refresh
+        </Button>
         <Button onClick={() => setShowUploadDialog(true)}>
           <Upload className="w-4 h-4 mr-2" /> Upload
         </Button>
