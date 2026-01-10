@@ -50,6 +50,56 @@ export type Database = {
         }
         Relationships: []
       }
+      analytics_events: {
+        Row: {
+          article_id: string | null
+          created_at: string | null
+          event_category: string | null
+          event_label: string | null
+          event_name: string
+          event_value: number | null
+          id: string
+          metadata: Json | null
+          page_path: string | null
+          session_id: string | null
+          visitor_id: string | null
+        }
+        Insert: {
+          article_id?: string | null
+          created_at?: string | null
+          event_category?: string | null
+          event_label?: string | null
+          event_name: string
+          event_value?: number | null
+          id?: string
+          metadata?: Json | null
+          page_path?: string | null
+          session_id?: string | null
+          visitor_id?: string | null
+        }
+        Update: {
+          article_id?: string | null
+          created_at?: string | null
+          event_category?: string | null
+          event_label?: string | null
+          event_name?: string
+          event_value?: number | null
+          id?: string
+          metadata?: Json | null
+          page_path?: string | null
+          session_id?: string | null
+          visitor_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "analytics_events_article_id_fkey"
+            columns: ["article_id"]
+            isOneToOne: false
+            referencedRelation: "articles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       article_revisions: {
         Row: {
           article_id: string
@@ -351,6 +401,62 @@ export type Database = {
           subscribed_at?: string
         }
         Relationships: []
+      }
+      page_views: {
+        Row: {
+          article_id: string | null
+          browser: string | null
+          city: string | null
+          country: string | null
+          created_at: string | null
+          device_type: string | null
+          id: string
+          page_path: string
+          page_title: string | null
+          referrer: string | null
+          session_id: string | null
+          user_agent: string | null
+          visitor_id: string | null
+        }
+        Insert: {
+          article_id?: string | null
+          browser?: string | null
+          city?: string | null
+          country?: string | null
+          created_at?: string | null
+          device_type?: string | null
+          id?: string
+          page_path: string
+          page_title?: string | null
+          referrer?: string | null
+          session_id?: string | null
+          user_agent?: string | null
+          visitor_id?: string | null
+        }
+        Update: {
+          article_id?: string | null
+          browser?: string | null
+          city?: string | null
+          country?: string | null
+          created_at?: string | null
+          device_type?: string | null
+          id?: string
+          page_path?: string
+          page_title?: string | null
+          referrer?: string | null
+          session_id?: string | null
+          user_agent?: string | null
+          visitor_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "page_views_article_id_fkey"
+            columns: ["article_id"]
+            isOneToOne: false
+            referencedRelation: "articles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       site_settings: {
         Row: {

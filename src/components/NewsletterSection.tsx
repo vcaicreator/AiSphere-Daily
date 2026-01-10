@@ -3,10 +3,12 @@ import { Send, Loader2, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { useAnalytics } from "@/hooks/useAnalytics";
 
 const NewsletterSection = () => {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "success">("idle");
+  const { trackNewsletterSignup } = useAnalytics();
 
   const isValidEmail = (email: string) => {
     return /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/.test(email);
@@ -39,6 +41,9 @@ const NewsletterSection = () => {
       setStatus("idle");
       return;
     }
+    
+    // Track the signup event
+    trackNewsletterSignup(trimmedEmail);
     
     setStatus("success");
     setEmail("");

@@ -1,4 +1,4 @@
-import { FileText, Eye, Users, Tags, Image, Mail, Plus, Clock, TrendingUp, Calendar } from 'lucide-react';
+import { FileText, Eye, Users, Tags, Image, Mail, Plus, Clock, TrendingUp, Calendar, Activity } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import AdminLayout from '@/components/admin/AdminLayout';
 import { useAllArticles } from '@/hooks/useArticles';
@@ -15,11 +15,14 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from 'recharts';
+import { usePageViewStats, useRealtimeVisitors } from '@/hooks/useAnalyticsData';
 
 const AdminDashboard = () => {
   const { data: articles, isLoading: articlesLoading } = useAllArticles();
   const { data: authors, isLoading: authorsLoading } = useAuthors();
   const { data: categories, isLoading: categoriesLoading } = useCategories();
+  const { data: pageViewStats, isLoading: analyticsLoading } = usePageViewStats('7d');
+  const { data: realtimeData } = useRealtimeVisitors();
   
   // Fetch subscriber count
   const { data: subscriberCount } = useQuery({
@@ -38,23 +41,10 @@ const AdminDashboard = () => {
   const publishedCount = articles?.filter(a => a.status === 'published').length || 0;
   const draftCount = articles?.filter(a => a.status === 'draft').length || 0;
   const scheduledCount = articles?.filter(a => a.status === 'scheduled').length || 0;
-  const totalViews = articles?.reduce((sum, a) => sum + (a.views_count || 0), 0) || 0;
+  const totalViews = pageViewStats?.totalViews || 0;
 
-  // Generate mock chart data based on articles
-  const chartData = (() => {
-    const days = 7;
-    const data = [];
-    for (let i = days - 1; i >= 0; i--) {
-      const date = new Date();
-      date.setDate(date.getDate() - i);
-      const dayViews = Math.floor(Math.random() * 500) + 100;
-      data.push({
-        date: date.toLocaleDateString('en-US', { weekday: 'short' }),
-        views: dayViews,
-      });
-    }
-    return data;
-  })();
+  // Use real chart data from analytics
+  const chartData = pageViewStats?.chartData || [];
 
   const stats = [
     {
@@ -66,11 +56,19 @@ const AdminDashboard = () => {
       href: '/admin/articles',
     },
     {
-      label: 'Total Views',
+      label: 'Page Views',
       value: totalViews.toLocaleString(),
       icon: Eye,
       color: 'bg-green-500/10 text-green-500',
-      loading: articlesLoading,
+      loading: analyticsLoading,
+      href: '/admin/analytics',
+    },
+    {
+      label: 'Active Now',
+      value: realtimeData?.activeVisitors || 0,
+      icon: Activity,
+      color: 'bg-emerald-500/10 text-emerald-500',
+      loading: false,
     },
     {
       label: 'Authors',
@@ -159,7 +157,7 @@ const AdminDashboard = () => {
                   </linearGradient>
                 </defs>
                 <XAxis 
-                  dataKey="date" 
+                  dataKey="formattedDate" 
                   axisLine={false} 
                   tickLine={false}
                   tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }}

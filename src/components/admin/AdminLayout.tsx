@@ -12,7 +12,8 @@ import {
   Image,
   Settings,
   Mail,
-  MessageSquare
+  MessageSquare,
+  BarChart3
 } from 'lucide-react';
 import { useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
@@ -31,6 +32,7 @@ const AdminLayout = ({ children, title }: AdminLayoutProps) => {
 
   const navItems = [
     { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
+    { href: '/admin/analytics', label: 'Analytics', icon: BarChart3 },
     { href: '/admin/articles', label: 'Articles', icon: FileText },
     { href: '/admin/authors', label: 'Authors', icon: Users },
     { href: '/admin/categories', label: 'Categories', icon: Tags },
