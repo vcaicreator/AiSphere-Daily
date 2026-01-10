@@ -10,7 +10,8 @@ import {
   TrendingUp,
   Calendar,
   CheckCircle,
-  XCircle
+  XCircle,
+  RefreshCw
 } from 'lucide-react';
 import AdminLayout from '@/components/admin/AdminLayout';
 import { Button } from '@/components/ui/button';
@@ -25,10 +26,11 @@ type Subscriber = Tables<'newsletter_subscribers'>;
 const AdminSubscribers = () => {
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState<'all' | 'active' | 'inactive'>('all');
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const queryClient = useQueryClient();
 
   // Fetch subscribers
-  const { data: subscribers, isLoading } = useQuery({
+  const { data: subscribers, isLoading, refetch } = useQuery({
     queryKey: ['newsletter_subscribers'],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -40,6 +42,12 @@ const AdminSubscribers = () => {
       return data as Subscriber[];
     },
   });
+
+  const handleRefresh = async () => {
+    setIsRefreshing(true);
+    await refetch();
+    setIsRefreshing(false);
+  };
 
   // Toggle active status
   const toggleActive = useMutation({
@@ -173,7 +181,16 @@ const AdminSubscribers = () => {
 
         <div className="flex-1" />
 
-        {/* Export */}
+        {/* Refresh & Export */}
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={handleRefresh}
+          disabled={isRefreshing}
+        >
+          <RefreshCw className={`w-4 h-4 mr-1 ${isRefreshing ? 'animate-spin' : ''}`} />
+          Refresh
+        </Button>
         <Button onClick={exportToCSV} variant="outline">
           <Download className="w-4 h-4 mr-2" /> Export CSV
         </Button>

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Plus, Search, Trash2, Edit, Eye } from 'lucide-react';
+import { Plus, Search, Trash2, Edit, Eye, RefreshCw } from 'lucide-react';
 import AdminLayout from '@/components/admin/AdminLayout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -21,8 +21,15 @@ import {
 const AdminArticles = () => {
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
-  const { data: articles, isLoading } = useAllArticles();
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const { data: articles, isLoading, refetch } = useAllArticles();
   const deleteArticle = useDeleteArticle();
+
+  const handleRefresh = async () => {
+    setIsRefreshing(true);
+    await refetch();
+    setIsRefreshing(false);
+  };
 
   const filteredArticles = articles?.filter((article) => {
     const matchesSearch =
@@ -75,6 +82,15 @@ const AdminArticles = () => {
           <option value="scheduled">Scheduled</option>
           <option value="archived">Archived</option>
         </select>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={handleRefresh}
+          disabled={isRefreshing}
+        >
+          <RefreshCw className={`w-4 h-4 mr-1 ${isRefreshing ? 'animate-spin' : ''}`} />
+          Refresh
+        </Button>
         <Link to="/admin/articles/new">
           <Button className="w-full sm:w-auto">
             <Plus className="w-4 h-4 mr-2" />

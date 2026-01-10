@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Plus, Trash2, Edit, Save, X, GripVertical, FileText } from 'lucide-react';
+import { Plus, Trash2, Edit, Save, X, GripVertical, FileText, RefreshCw } from 'lucide-react';
 import AdminLayout from '@/components/admin/AdminLayout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -122,11 +122,18 @@ const SortableCategory = ({ category, articleCount, onEdit, onDelete }: Sortable
 };
 
 const AdminCategories = () => {
-  const { data: categories, isLoading } = useCategories();
-  const { data: articles } = useAllArticles();
+  const { data: categories, isLoading, refetch: refetchCategories } = useCategories();
+  const { data: articles, refetch: refetchArticles } = useAllArticles();
   const createCategory = useCreateCategory();
   const updateCategory = useUpdateCategory();
   const deleteCategory = useDeleteCategory();
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  const handleRefresh = async () => {
+    setIsRefreshing(true);
+    await Promise.all([refetchCategories(), refetchArticles()]);
+    setIsRefreshing(false);
+  };
 
   const [editingId, setEditingId] = useState<string | null>(null);
   const [showNew, setShowNew] = useState(false);
@@ -224,7 +231,16 @@ const AdminCategories = () => {
 
   return (
     <AdminLayout title="Categories">
-      <div className="mb-6">
+      <div className="mb-6 flex gap-2">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={handleRefresh}
+          disabled={isRefreshing}
+        >
+          <RefreshCw className={`w-4 h-4 mr-1 ${isRefreshing ? 'animate-spin' : ''}`} />
+          Refresh
+        </Button>
         <Button
           onClick={() => {
             setShowNew(true);
