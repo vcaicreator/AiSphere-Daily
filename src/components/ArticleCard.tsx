@@ -1,13 +1,19 @@
 import { ArrowUpRight, Clock } from "lucide-react";
 
-interface ArticleCardProps {
+export interface ArticleCardProps {
   id: string;
   title: string;
+  subtitle?: string;
   category: string;
   date: string;
   image: string;
   readTime?: string;
   size?: "small" | "large";
+  author?: {
+    name: string;
+    avatar: string;
+    bio: string;
+  };
 }
 
 const ArticleCard = ({ 

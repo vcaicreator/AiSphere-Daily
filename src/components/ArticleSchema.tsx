@@ -1,4 +1,4 @@
-import { Article } from "@/data/articles";
+import { Article } from "@/hooks/useArticles";
 
 interface ArticleSchemaProps {
   article: Article;
@@ -8,25 +8,27 @@ interface ArticleSchemaProps {
  * Generates Schema.org Article structured data for SEO
  */
 const ArticleSchema = ({ article }: ArticleSchemaProps) => {
-  const baseUrl = "https://perspective-magazine.com";
+  const baseUrl = "https://aispheredaily.com";
+  
+  const sections = article.sections || [];
   
   const schema = {
     "@context": "https://schema.org",
     "@type": "Article",
     "headline": article.title,
-    "description": article.subtitle,
-    "image": article.image,
-    "datePublished": article.date,
-    "dateModified": article.date,
-    "author": {
+    "description": article.subtitle || article.introduction || '',
+    "image": article.featured_image || '',
+    "datePublished": article.published_at || article.created_at,
+    "dateModified": article.updated_at || article.created_at,
+    "author": article.author ? {
       "@type": "Person",
       "name": article.author.name,
-      "description": article.author.bio,
-      "image": article.author.avatar,
-    },
+      "description": article.author.bio || '',
+      "image": article.author.avatar_url || '',
+    } : undefined,
     "publisher": {
       "@type": "Organization",
-      "name": "Perspective Magazine",
+      "name": "AiSphere Daily",
       "logo": {
         "@type": "ImageObject",
         "url": `${baseUrl}/logo.png`,
@@ -34,12 +36,12 @@ const ArticleSchema = ({ article }: ArticleSchemaProps) => {
     },
     "mainEntityOfPage": {
       "@type": "WebPage",
-      "@id": `${baseUrl}/article/${article.id}`,
+      "@id": `${baseUrl}/article/${article.slug}`,
     },
-    "articleSection": article.category,
-    "keywords": article.tags.join(", "),
-    "wordCount": calculateWordCount(article),
-    "timeRequired": `PT${article.readTime.replace(" min", "M")}`,
+    "articleSection": article.category?.name || '',
+    "keywords": article.tags?.join(", ") || '',
+    "wordCount": article.word_count || calculateWordCount(article, sections),
+    "timeRequired": `PT${article.read_time_minutes || 5}M`,
   };
 
   return (
@@ -53,14 +55,14 @@ const ArticleSchema = ({ article }: ArticleSchemaProps) => {
 /**
  * Calculate approximate word count from article content
  */
-function calculateWordCount(article: Article): number {
-  const intro = article.content.introduction.split(" ").length;
-  const sections = article.content.sections.reduce((acc, section) => {
-    return acc + section.heading.split(" ").length + section.content.split(" ").length;
+function calculateWordCount(article: Article, sections: { heading: string; content: string }[]): number {
+  const intro = article.introduction?.split(" ").length || 0;
+  const sectionsCount = sections.reduce((acc, section) => {
+    return acc + (section.heading?.split(" ").length || 0) + (section.content?.split(" ").length || 0);
   }, 0);
-  const conclusion = article.content.conclusion.split(" ").length;
+  const conclusion = article.conclusion?.split(" ").length || 0;
   
-  return intro + sections + conclusion;
+  return intro + sectionsCount + conclusion;
 }
 
 export default ArticleSchema;
