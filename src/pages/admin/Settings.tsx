@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Save, Globe, Search, Share2, Mail, Loader2 } from 'lucide-react';
+import { Save, Globe, Search, Share2, Mail, Loader2, BarChart3 } from 'lucide-react';
 import AdminLayout from '@/components/admin/AdminLayout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -9,6 +9,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ImageUploader } from '@/components/admin/ImageUploader';
+import { Switch } from '@/components/ui/switch';
 
 interface SiteSettings {
   site_title: string;
@@ -24,6 +25,8 @@ interface SiteSettings {
   linkedin_url: string;
   contact_email: string;
   newsletter_enabled: boolean;
+  ga_measurement_id: string;
+  analytics_enabled: boolean;
 }
 
 const defaultSettings: SiteSettings = {
@@ -40,6 +43,8 @@ const defaultSettings: SiteSettings = {
   linkedin_url: '',
   contact_email: '',
   newsletter_enabled: true,
+  ga_measurement_id: '',
+  analytics_enabled: true,
 };
 
 const AdminSettings = () => {
@@ -120,7 +125,7 @@ const AdminSettings = () => {
     <AdminLayout title="Settings">
       <div className="max-w-4xl">
         <Tabs defaultValue="general" className="space-y-6">
-          <TabsList className="glass-card p-1">
+          <TabsList className="glass-card p-1 flex-wrap">
             <TabsTrigger value="general" className="flex items-center gap-2">
               <Globe className="w-4 h-4" /> General
             </TabsTrigger>
@@ -132,6 +137,9 @@ const AdminSettings = () => {
             </TabsTrigger>
             <TabsTrigger value="email" className="flex items-center gap-2">
               <Mail className="w-4 h-4" /> Email
+            </TabsTrigger>
+            <TabsTrigger value="analytics" className="flex items-center gap-2">
+              <BarChart3 className="w-4 h-4" /> Analytics
             </TabsTrigger>
           </TabsList>
 
@@ -322,6 +330,52 @@ const AdminSettings = () => {
                   <Label htmlFor="newsletter_enabled" className="cursor-pointer">
                     Enable Newsletter Signup
                   </Label>
+                </div>
+              </div>
+            </div>
+          </TabsContent>
+
+          {/* Analytics Settings */}
+          <TabsContent value="analytics" className="space-y-6">
+            <div className="glass-card p-6 rounded-xl space-y-6">
+              <h2 className="text-lg font-semibold">Google Analytics</h2>
+              
+              <div className="grid gap-4">
+                <div className="flex items-center justify-between p-4 rounded-lg bg-muted/50">
+                  <div>
+                    <Label htmlFor="analytics_enabled" className="cursor-pointer font-medium">
+                      Enable Analytics Tracking
+                    </Label>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      Track page views and events across your site
+                    </p>
+                  </div>
+                  <Switch
+                    id="analytics_enabled"
+                    checked={settings.analytics_enabled}
+                    onCheckedChange={(checked) => updateSetting('analytics_enabled', checked)}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="ga_measurement_id">GA4 Measurement ID</Label>
+                  <Input
+                    id="ga_measurement_id"
+                    value={settings.ga_measurement_id}
+                    onChange={(e) => updateSetting('ga_measurement_id', e.target.value)}
+                    placeholder="G-XXXXXXXXXX"
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Enter your Google Analytics 4 Measurement ID (starts with G-). Leave empty to use built-in analytics only.
+                  </p>
+                </div>
+
+                <div className="p-4 rounded-lg bg-primary/5 border border-primary/20">
+                  <h3 className="font-medium text-sm mb-2">📊 Built-in Analytics</h3>
+                  <p className="text-sm text-muted-foreground">
+                    This site automatically tracks page views and events. View your analytics data in the{' '}
+                    <a href="/admin/analytics" className="text-primary hover:underline">Analytics Dashboard</a>.
+                  </p>
                 </div>
               </div>
             </div>
