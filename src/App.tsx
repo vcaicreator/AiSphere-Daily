@@ -26,6 +26,9 @@ import AdminArticles from "./pages/admin/Articles";
 import AdminArticleEditor from "./pages/admin/ArticleEditor";
 import AdminAuthors from "./pages/admin/Authors";
 import AdminCategories from "./pages/admin/Categories";
+import AdminMedia from "./pages/admin/Media";
+import AdminSettings from "./pages/admin/Settings";
+import AdminSubscribers from "./pages/admin/Subscribers";
 import ProtectedRoute from "./components/admin/ProtectedRoute";
 
 const queryClient = new QueryClient();
@@ -63,6 +66,9 @@ const App = () => (
             <Route path="/admin/articles/:id" element={<ProtectedRoute><AdminArticleEditor /></ProtectedRoute>} />
             <Route path="/admin/authors" element={<ProtectedRoute><AdminAuthors /></ProtectedRoute>} />
             <Route path="/admin/categories" element={<ProtectedRoute><AdminCategories /></ProtectedRoute>} />
+            <Route path="/admin/media" element={<ProtectedRoute><AdminMedia /></ProtectedRoute>} />
+            <Route path="/admin/settings" element={<ProtectedRoute><AdminSettings /></ProtectedRoute>} />
+            <Route path="/admin/subscribers" element={<ProtectedRoute><AdminSubscribers /></ProtectedRoute>} />
 
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />

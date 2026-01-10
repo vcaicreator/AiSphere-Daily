@@ -8,7 +8,10 @@ import {
   LogOut,
   Home,
   Menu,
-  X
+  X,
+  Image,
+  Settings,
+  Mail
 } from 'lucide-react';
 import { useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
@@ -30,6 +33,9 @@ const AdminLayout = ({ children, title }: AdminLayoutProps) => {
     { href: '/admin/articles', label: 'Articles', icon: FileText },
     { href: '/admin/authors', label: 'Authors', icon: Users },
     { href: '/admin/categories', label: 'Categories', icon: Tags },
+    { href: '/admin/media', label: 'Media', icon: Image },
+    { href: '/admin/subscribers', label: 'Subscribers', icon: Mail },
+    { href: '/admin/settings', label: 'Settings', icon: Settings },
   ];
 
   const isActive = (href: string) => {
@@ -83,7 +89,7 @@ const AdminLayout = ({ children, title }: AdminLayoutProps) => {
             </div>
 
             {/* Navigation */}
-            <nav className="flex-1 space-y-1">
+            <nav className="flex-1 space-y-1 overflow-y-auto">
               {navItems.map((item) => {
                 const Icon = item.icon;
                 const active = isActive(item.href);
