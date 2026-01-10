@@ -37,10 +37,10 @@ const NewsletterSection = () => {
           {/* Heading */}
           <div className="space-y-4">
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight">
-              Stay <span className="gradient-text">inspired</span>
+              Stay <span className="gradient-text">ahead</span>
             </h2>
             <p className="text-lg md:text-xl text-muted-foreground leading-relaxed max-w-xl mx-auto">
-              Subscribe to receive our latest articles and curated insights directly in your inbox. No spam, just inspiration.
+              Subscribe to receive the latest AI news and insights directly in your inbox. No spam, just innovation.
             </p>
           </div>
 

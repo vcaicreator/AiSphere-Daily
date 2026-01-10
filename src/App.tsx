@@ -15,6 +15,12 @@ import Contact from "./pages/Contact";
 import StyleGuide from "./pages/StyleGuide";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
+import Cookies from "./pages/Cookies";
+import Copyright from "./pages/Copyright";
+import DMCA from "./pages/DMCA";
+import Disclaimer from "./pages/Disclaimer";
+import Accessibility from "./pages/Accessibility";
+import UsageGuidelines from "./pages/UsageGuidelines";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -38,6 +44,12 @@ const App = () => (
           <Route path="/style-guide" element={<StyleGuide />} />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/terms" element={<Terms />} />
+          <Route path="/cookies" element={<Cookies />} />
+          <Route path="/copyright" element={<Copyright />} />
+          <Route path="/dmca" element={<DMCA />} />
+          <Route path="/disclaimer" element={<Disclaimer />} />
+          <Route path="/accessibility" element={<Accessibility />} />
+          <Route path="/usage-guidelines" element={<UsageGuidelines />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

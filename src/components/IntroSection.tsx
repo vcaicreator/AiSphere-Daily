@@ -16,26 +16,26 @@ const IntroSection = () => {
 
         {/* Main Heading */}
         <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight tracking-tight animate-slide-up">
-          A space for exploring ideas,
+          Decoding AI for everyone,
           <br className="hidden md:block" />
-          <span className="gradient-text"> finding inspiration,</span>
+          <span className="gradient-text"> inspiring innovation,</span>
           <br className="hidden md:block" />
-          and seeing the world differently.
+          and shaping the future of tech.
         </h2>
 
         {/* Description */}
         <p className="text-lg md:text-xl text-muted-foreground leading-relaxed max-w-3xl mx-auto animate-slide-up stagger-1">
-          From mindful living and personal growth to travel experiences and creative pursuits, 
-          we share perspectives that enrich daily life. Join us as we explore topics that inspire 
-          curiosity and meaningful conversation.
+          From breakthrough AI research and machine learning insights to tech trends and digital innovation, 
+          we deliver the stories that matter. Join us as we explore the cutting edge of artificial intelligence 
+          and its impact on our world.
         </p>
 
         {/* Feature Pills */}
         <div className="flex flex-wrap justify-center gap-3 pt-4 animate-slide-up stagger-2">
-          {["Wellness", "Travel", "Creativity", "Growth", "Community"].map((topic, index) => (
+          {["AI News", "Machine Learning", "Tech Trends", "Innovation", "Future Tech"].map((topic, index) => (
             <a
               key={topic}
-              href={`/${topic.toLowerCase()}`}
+              href={`/${topic.toLowerCase().replace(' ', '-')}`}
               className="glass-button px-5 py-2.5 rounded-full text-sm font-medium hover:scale-105 transition-all duration-300"
               style={{ animationDelay: `${index * 0.1}s` }}
             >

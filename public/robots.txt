@@ -1,38 +1,113 @@
-# Robots.txt for Perspective Magazine
-# https://perspective-magazine.com
+# Robots.txt for AiSphere Daily
+# https://aispheredaily.com
 
-# Allow all crawlers
+# Allow all standard crawlers
 User-agent: *
 Allow: /
-
-# Disallow admin and private paths
 Disallow: /api/
 Disallow: /admin/
-Disallow: /_next/
 Disallow: /private/
 
-# Allow important resources
-Allow: /sitemap.xml
-Allow: /robots.txt
-Allow: /*.js
-Allow: /*.css
-Allow: /*.png
-Allow: /*.jpg
-Allow: /*.gif
-Allow: /*.svg
-Allow: /*.webp
+# ============================================
+# AI TRAINING CRAWLERS - EXPLICITLY BLOCKED
+# ============================================
 
-# Sitemap location
-Sitemap: https://perspective-magazine.com/sitemap.xml
+# OpenAI GPT Crawlers
+User-agent: GPTBot
+Disallow: /
 
-# Crawl-delay for polite crawling
-Crawl-delay: 1
+User-agent: ChatGPT-User
+Disallow: /
 
-# Specific bot directives
+# Google AI Training
+User-agent: Google-Extended
+Disallow: /
+
+# Anthropic Claude
+User-agent: anthropic-ai
+Disallow: /
+
+User-agent: ClaudeBot
+Disallow: /
+
+User-agent: Claude-Web
+Disallow: /
+
+# Common Crawl (used for AI training)
+User-agent: CCBot
+Disallow: /
+
+# Bytedance/TikTok AI
+User-agent: Bytespider
+Disallow: /
+
+# Facebook AI
+User-agent: FacebookBot
+Disallow: /
+
+# Apple AI
+User-agent: Applebot-Extended
+Disallow: /
+
+# Cohere AI
+User-agent: cohere-ai
+Disallow: /
+
+# Perplexity AI
+User-agent: PerplexityBot
+Disallow: /
+
+# Amazon AI
+User-agent: Amazonbot
+Disallow: /
+
+# AI Data Scrapers
+User-agent: AI2Bot
+Disallow: /
+
+User-agent: Ai2Bot-Dolma
+Disallow: /
+
+User-agent: Diffbot
+Disallow: /
+
+User-agent: omgili
+Disallow: /
+
+User-agent: omgilibot
+Disallow: /
+
+# Generic data collection bots
+User-agent: DataForSeoBot
+Disallow: /
+
+User-agent: magpie-crawler
+Disallow: /
+
+User-agent: peer39_crawler
+Disallow: /
+
+User-agent: Scrapy
+Disallow: /
+
+# ============================================
+# ALLOWED SEARCH ENGINE CRAWLERS
+# ============================================
+
 User-agent: Googlebot
 Allow: /
+Disallow: /api/
+Disallow: /admin/
 
 User-agent: Bingbot
+Allow: /
+Disallow: /api/
+Disallow: /admin/
+
+User-agent: Slurp
+Allow: /
+
+User-agent: DuckDuckBot
 Allow: /
 
 User-agent: Twitterbot
@@ -41,8 +116,14 @@ Allow: /
 User-agent: facebookexternalhit
 Allow: /
 
-User-agent: Slurp
-Allow: /
+# ============================================
+# SITEMAP
+# ============================================
 
-User-agent: DuckDuckBot
-Allow: /
+Sitemap: https://aispheredaily.com/sitemap.xml
+
+# ============================================
+# CRAWL RATE LIMITING
+# ============================================
+
+Crawl-delay: 1

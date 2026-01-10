@@ -18,9 +18,9 @@ interface SEOHeadProps {
  * Updates document head with proper meta tags for social sharing and SEO
  */
 const SEOHead = ({
-  title = "Perspective | Premium Online Magazine for Modern Living",
-  description = "Discover inspiring stories on wellness, travel, creativity, and personal growth. Your curated destination for thoughtful content that enriches daily life.",
-  image = "https://perspective-magazine.com/og-image.jpg",
+  title = "AiSphere Daily | AI News, Insights & Innovation",
+  description = "Your premier destination for AI news, machine learning insights, and technology innovation. Stay ahead with the latest in artificial intelligence.",
+  image = "https://aispheredaily.com/logo.png",
   type = "website",
   publishedTime,
   modifiedTime,
@@ -29,7 +29,7 @@ const SEOHead = ({
   tags = [],
 }: SEOHeadProps) => {
   const location = useLocation();
-  const baseUrl = "https://perspective-magazine.com";
+  const baseUrl = "https://aispheredaily.com";
   const currentUrl = `${baseUrl}${location.pathname}`;
 
   useEffect(() => {

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Menu, X, Moon, Sun, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import logo from "@/assets/logo.png";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -40,7 +41,7 @@ const Header = () => {
 
   const navLinks = [
     { href: "/", label: "Home" },
-    { href: "/creativity", label: "Creativity" },
+    { href: "/creativity", label: "AI News" },
     { href: "/about", label: "About" },
     { href: "/contact", label: "Contact" },
   ];
@@ -59,12 +60,11 @@ const Header = () => {
           aria-label="Main navigation"
         >
           {/* Logo */}
-          <a href="/" className="flex items-center gap-2 sm:gap-3 group" aria-label="Perspective Magazine Home">
-            <div className="relative w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-primary flex items-center justify-center overflow-hidden transition-transform duration-300 group-hover:scale-105">
-              <span className="text-primary-foreground font-bold text-lg sm:text-xl">P</span>
-              <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent" />
+          <a href="/" className="flex items-center gap-2 sm:gap-3 group" aria-label="AiSphere Daily Home">
+            <div className="relative w-9 h-9 sm:w-10 sm:h-10 rounded-xl overflow-hidden transition-transform duration-300 group-hover:scale-105">
+              <img src={logo} alt="AiSphere Daily Logo" className="w-full h-full object-contain" />
             </div>
-            <span className="text-lg sm:text-xl font-bold font-display tracking-tight">Perspective</span>
+            <span className="text-lg sm:text-xl font-bold font-display tracking-tight">AiSphere Daily</span>
           </a>
 
           {/* Desktop Navigation */}
