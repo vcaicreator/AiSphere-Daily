@@ -371,10 +371,12 @@ const AdminMedia = () => {
             </div>
             <ImageUploader
               bucket={activeBucket}
-              onUpload={(url) => {
-                toast.success('Image uploaded');
-                setShowUploadDialog(false);
-                fetchFiles();
+              onChange={(url) => {
+                if (url) {
+                  toast.success('Image uploaded');
+                  setShowUploadDialog(false);
+                  fetchFiles();
+                }
               }}
             />
           </div>
