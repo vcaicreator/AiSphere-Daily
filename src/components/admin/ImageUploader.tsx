@@ -16,6 +16,7 @@ interface ImageUploaderProps {
   maxSizeMB?: number;
   showPreview?: boolean;
   previewClassName?: string;
+  accept?: string;
 }
 
 export function ImageUploader({
@@ -29,6 +30,7 @@ export function ImageUploader({
   maxSizeMB = 5,
   showPreview = true,
   previewClassName,
+  accept = 'image/jpeg,image/png,image/webp,image/gif',
 }: ImageUploaderProps) {
   const [isDragging, setIsDragging] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -58,7 +60,7 @@ export function ImageUploader({
       setIsDragging(false);
 
       const file = e.dataTransfer.files[0];
-      if (file && file.type.startsWith('image/')) {
+      if (file) {
         const result = await upload(file, { bucket, folder, maxSizeMB });
         if (result) {
           onChange(result.url);
@@ -142,7 +144,7 @@ export function ImageUploader({
         <input
           ref={inputRef}
           type="file"
-          accept="image/jpeg,image/png,image/webp,image/gif"
+          accept={accept}
           onChange={handleFileSelect}
           className="hidden"
         />
@@ -192,7 +194,7 @@ export function ImageUploader({
       <input
         ref={inputRef}
         type="file"
-        accept="image/jpeg,image/png,image/webp,image/gif"
+        accept={accept}
         onChange={handleFileSelect}
         className="hidden"
       />
