@@ -17,26 +17,35 @@ export type Database = {
       article_sections: {
         Row: {
           article_id: string
+          block_data: Json | null
+          block_type: string
           content: string
           created_at: string
           heading: string
           id: string
+          image_url: string | null
           order_index: number
         }
         Insert: {
           article_id: string
+          block_data?: Json | null
+          block_type?: string
           content: string
           created_at?: string
           heading: string
           id?: string
+          image_url?: string | null
           order_index?: number
         }
         Update: {
           article_id?: string
+          block_data?: Json | null
+          block_type?: string
           content?: string
           created_at?: string
           heading?: string
           id?: string
+          image_url?: string | null
           order_index?: number
         }
         Relationships: [
@@ -181,6 +190,8 @@ export type Database = {
           color: string | null
           created_at: string
           description: string | null
+          display_order: number | null
+          featured_image: string | null
           icon: string | null
           id: string
           name: string
@@ -190,6 +201,8 @@ export type Database = {
           color?: string | null
           created_at?: string
           description?: string | null
+          display_order?: number | null
+          featured_image?: string | null
           icon?: string | null
           id?: string
           name: string
@@ -199,6 +212,8 @@ export type Database = {
           color?: string | null
           created_at?: string
           description?: string | null
+          display_order?: number | null
+          featured_image?: string | null
           icon?: string | null
           id?: string
           name?: string
@@ -224,6 +239,30 @@ export type Database = {
           id?: string
           is_active?: boolean
           subscribed_at?: string
+        }
+        Relationships: []
+      }
+      site_settings: {
+        Row: {
+          created_at: string
+          id: string
+          key: string
+          updated_at: string
+          value: Json
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          key: string
+          updated_at?: string
+          value?: Json
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          key?: string
+          updated_at?: string
+          value?: Json
         }
         Relationships: []
       }
