@@ -1,4 +1,4 @@
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Clock } from "lucide-react";
 
 interface ArticleCardProps {
   id: string;
@@ -6,10 +6,19 @@ interface ArticleCardProps {
   category: string;
   date: string;
   image: string;
+  readTime?: string;
   size?: "small" | "large";
 }
 
-const ArticleCard = ({ id, title, category, date, image, size = "small" }: ArticleCardProps) => {
+const ArticleCard = ({ 
+  id, 
+  title, 
+  category, 
+  date, 
+  image, 
+  readTime = "5 min",
+  size = "small" 
+}: ArticleCardProps) => {
   const getCategoryClass = (cat: string) => {
     const normalized = cat.toLowerCase();
     if (normalized.includes("financ")) return "tag-financing";
@@ -25,49 +34,60 @@ const ArticleCard = ({ id, title, category, date, image, size = "small" }: Artic
   return (
     <a
       href={`/article/${id}`}
-      className={`group relative block rounded-[2.5rem] overflow-hidden card-hover ${
+      className={`group relative block rounded-[2rem] overflow-hidden card-hover ${
         size === "large" ? "col-span-1 md:col-span-2 row-span-2" : ""
       }`}
+      aria-label={`Read article: ${title}`}
     >
-      {/* Image */}
-      <div className="relative aspect-[4/3] overflow-hidden bg-muted rounded-[2.5rem]">
-        <img
-          src={image}
-          alt={title}
-          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-        />
-        
-        {/* Overlay gradient */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
-        
-        {/* Content overlay */}
-        <div className="absolute inset-0 p-8 flex flex-col justify-between">
-          {/* Top section - Category and Date */}
-          <div className="flex items-start justify-between">
-            <span className={`px-4 py-1.5 rounded-full text-xs font-medium backdrop-blur-md ${getCategoryClass(category)} bg-opacity-80`}>
+      {/* Glass Card Container */}
+      <article className="relative glass-card rounded-[2rem] overflow-hidden">
+        {/* Image */}
+        <div className="relative aspect-[4/3] overflow-hidden">
+          <img
+            src={image}
+            alt=""
+            className="w-full h-full object-cover transition-all duration-700 group-hover:scale-110"
+            loading="lazy"
+          />
+          
+          {/* Gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+          
+          {/* Glass overlay on hover */}
+          <div className="absolute inset-0 bg-accent/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+          
+          {/* Top section - Category and Read Time */}
+          <div className="absolute top-4 left-4 right-4 flex items-start justify-between gap-2">
+            <span className={`glass-subtle px-3 py-1.5 rounded-full text-xs font-semibold ${getCategoryClass(category)}`}>
               {category}
             </span>
-            <span className="px-4 py-1.5 rounded-full bg-white/20 backdrop-blur-md text-xs font-medium text-white border border-white/30">
-              {date}
-            </span>
+            <div className="glass-subtle px-3 py-1.5 rounded-full flex items-center gap-1.5">
+              <Clock className="w-3 h-3 text-white/80" />
+              <span className="text-xs font-medium text-white/90">{readTime}</span>
+            </div>
           </div>
 
-          {/* Bottom section - Title and Arrow */}
-          <div className="flex items-end justify-between gap-4">
-            <div className="flex-1">
-              <span className="text-white/50 text-xs font-medium tracking-wider block mb-3">{id}</span>
-              <h3 className="text-white text-xl md:text-2xl lg:text-3xl font-bold leading-tight tracking-tight">
-                {title}
-              </h3>
+          {/* Bottom section - Content */}
+          <div className="absolute bottom-0 left-0 right-0 p-5 sm:p-6">
+            {/* Date */}
+            <span className="text-white/60 text-xs font-medium tracking-wider uppercase mb-2 block">
+              {date}
+            </span>
+            
+            {/* Title */}
+            <h3 className="text-white text-xl md:text-2xl font-bold leading-tight tracking-tight line-clamp-2 group-hover:text-white/90 transition-colors">
+              {title}
+            </h3>
+          </div>
+
+          {/* Floating arrow button */}
+          <div className="absolute bottom-5 right-5 sm:bottom-6 sm:right-6">
+            <div className="floating-button group-hover:rotate-45">
+              <ArrowUpRight className="w-5 h-5 text-foreground" />
             </div>
           </div>
         </div>
-
-        {/* Floating circular arrow button - positioned outside content overlay */}
-        <div className="absolute bottom-6 right-6 floating-button">
-          <ArrowUpRight className="w-5 h-5" />
-        </div>
-      </div>
+      </article>
     </a>
   );
 };
