@@ -310,10 +310,9 @@ const AdminCategories = () => {
               <label className="text-sm font-medium">Featured Image</label>
               <ImageUploader
                 bucket="article-images"
-                currentImage={form.featured_image}
-                onUpload={(url) => setForm({ ...form, featured_image: url })}
-                onRemove={() => setForm({ ...form, featured_image: '' })}
-                className="aspect-video"
+                value={form.featured_image}
+                onChange={(url) => setForm({ ...form, featured_image: url || '' })}
+                aspectRatio="video"
               />
             </div>
           </div>
