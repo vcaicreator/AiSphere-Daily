@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import type { Tables, TablesInsert, TablesUpdate } from '@/integrations/supabase/types';
+import type { Tables, TablesInsert, TablesUpdate, Json } from '@/integrations/supabase/types';
 
 export type ArticleSection = Tables<'article_sections'>;
 export type ArticleSectionInsert = TablesInsert<'article_sections'>;
@@ -78,7 +78,14 @@ export const useBulkUpsertSections = () => {
       sections,
     }: {
       articleId: string;
-      sections: { heading: string; content: string; order_index: number }[];
+      sections: { 
+        heading: string; 
+        content: string; 
+        order_index: number;
+        block_type?: string;
+        image_url?: string | null;
+        block_data?: Record<string, unknown>;
+      }[];
     }) => {
       // First, delete existing sections
       await supabase
@@ -94,6 +101,9 @@ export const useBulkUpsertSections = () => {
             heading: section.heading,
             content: section.content,
             order_index: section.order_index ?? index,
+            block_type: section.block_type || 'paragraph',
+            image_url: section.image_url || null,
+            block_data: (section.block_data || {}) as Json,
           }))
         );
 
