@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
-export type BucketName = 'article-images' | 'author-avatars';
+export type BucketName = 'article-images' | 'author-avatars' | 'media';
 
 interface UploadOptions {
   bucket: BucketName;

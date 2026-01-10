@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ImageUploader } from '@/components/admin/ImageUploader';
 
 interface SiteSettings {
   site_title: string;
@@ -221,12 +222,14 @@ const AdminSettings = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="og_image_url">Default OG Image URL</Label>
-                  <Input
-                    id="og_image_url"
+                  <Label>Default OG Image</Label>
+                  <ImageUploader
                     value={settings.og_image_url}
-                    onChange={(e) => updateSetting('og_image_url', e.target.value)}
-                    placeholder="https://example.com/og-image.jpg"
+                    onChange={(url) => updateSetting('og_image_url', url || '')}
+                    bucket="media"
+                    folder="og-images"
+                    aspectRatio="video"
+                    maxSizeMB={2}
                   />
                   <p className="text-xs text-muted-foreground">
                     Default image shown when shared on social media. Recommended: 1200x630px.
