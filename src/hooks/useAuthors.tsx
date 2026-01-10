@@ -6,7 +6,10 @@ export type Author = Tables<'authors'>;
 export type AuthorInsert = TablesInsert<'authors'>;
 export type AuthorUpdate = TablesUpdate<'authors'>;
 
-// Fetch all authors
+// Public author type (without email)
+export type PublicAuthor = Omit<Author, 'email'>;
+
+// Fetch all authors for admin (includes email)
 export const useAuthors = () => {
   return useQuery({
     queryKey: ['authors'],
@@ -22,7 +25,23 @@ export const useAuthors = () => {
   });
 };
 
-// Fetch single author by ID
+// Fetch all public authors (without email) - for public-facing pages
+export const usePublicAuthors = () => {
+  return useQuery({
+    queryKey: ['public-authors'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('public_authors')
+        .select('*')
+        .order('name', { ascending: true });
+
+      if (error) throw error;
+      return data as PublicAuthor[];
+    },
+  });
+};
+
+// Fetch single author by ID (admin - includes email)
 export const useAuthor = (id: string | undefined) => {
   return useQuery({
     queryKey: ['author', id],
@@ -37,6 +56,26 @@ export const useAuthor = (id: string | undefined) => {
 
       if (error) throw error;
       return data as Author | null;
+    },
+    enabled: !!id,
+  });
+};
+
+// Fetch single public author by ID (without email) - for public-facing pages
+export const usePublicAuthor = (id: string | undefined) => {
+  return useQuery({
+    queryKey: ['public-author', id],
+    queryFn: async () => {
+      if (!id) return null;
+
+      const { data, error } = await supabase
+        .from('public_authors')
+        .select('*')
+        .eq('id', id)
+        .maybeSingle();
+
+      if (error) throw error;
+      return data as PublicAuthor | null;
     },
     enabled: !!id,
   });
