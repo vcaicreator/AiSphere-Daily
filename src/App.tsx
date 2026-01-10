@@ -29,6 +29,7 @@ import AdminCategories from "./pages/admin/Categories";
 import AdminMedia from "./pages/admin/Media";
 import AdminSettings from "./pages/admin/Settings";
 import AdminSubscribers from "./pages/admin/Subscribers";
+import AdminContactSubmissions from "./pages/admin/ContactSubmissions";
 import ProtectedRoute from "./components/admin/ProtectedRoute";
 
 const queryClient = new QueryClient();
@@ -69,6 +70,7 @@ const App = () => (
             <Route path="/admin/media" element={<ProtectedRoute><AdminMedia /></ProtectedRoute>} />
             <Route path="/admin/settings" element={<ProtectedRoute><AdminSettings /></ProtectedRoute>} />
             <Route path="/admin/subscribers" element={<ProtectedRoute><AdminSubscribers /></ProtectedRoute>} />
+            <Route path="/admin/contact-submissions" element={<ProtectedRoute><AdminContactSubmissions /></ProtectedRoute>} />
 
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />

@@ -1,8 +1,9 @@
 import Header from "@/components/Header";
-import { Mail, MapPin, Phone } from "lucide-react";
+import { Mail, MapPin, Phone, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -11,11 +12,66 @@ const Contact = () => {
     subject: "",
     message: "",
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [adminEmail, setAdminEmail] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  useEffect(() => {
+    // Fetch admin email from settings
+    const fetchAdminEmail = async () => {
+      const { data } = await supabase
+        .from('site_settings')
+        .select('value')
+        .eq('key', 'contact_email')
+        .single();
+      
+      if (data?.value && typeof data.value === 'object' && 'value' in data.value) {
+        setAdminEmail((data.value as { value: string }).value);
+      }
+    };
+    fetchAdminEmail();
+  }, []);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast.success("Message sent! We'll get back to you soon.");
-    setFormData({ name: "", email: "", subject: "", message: "" });
+    setIsSubmitting(true);
+
+    try {
+      // Save to database
+      const { error: dbError } = await supabase
+        .from('contact_submissions')
+        .insert({
+          name: formData.name,
+          email: formData.email,
+          subject: formData.subject,
+          message: formData.message,
+        });
+
+      if (dbError) throw dbError;
+
+      // Send email notifications via edge function
+      try {
+        await supabase.functions.invoke('send-contact-email', {
+          body: {
+            name: formData.name,
+            email: formData.email,
+            subject: formData.subject,
+            message: formData.message,
+            adminEmail: adminEmail || undefined,
+          }
+        });
+      } catch (emailError) {
+        // Email sending is optional, don't fail the whole submission
+        console.error('Email sending failed:', emailError);
+      }
+
+      toast.success("Message sent! We'll get back to you soon.");
+      setFormData({ name: "", email: "", subject: "", message: "" });
+    } catch (error: any) {
+      console.error('Submission error:', error);
+      toast.error("Failed to send message. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -44,8 +100,8 @@ const Contact = () => {
           {/* Contact Form */}
           <div className="rounded-2xl bg-card p-8">
             <h2 className="text-2xl font-bold mb-6">Send us a message</h2>
-        <form onSubmit={handleSubmit} className="space-y-6 animate-slide-up stagger-2">
-          <div>
+            <form onSubmit={handleSubmit} className="space-y-6 animate-slide-up stagger-2">
+              <div>
                 <label htmlFor="name" className="block text-sm font-medium mb-2">
                   Name
                 </label>
@@ -56,7 +112,8 @@ const Contact = () => {
                   value={formData.name}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 rounded-lg border border-input bg-background focus:outline-none focus:ring-2 focus:ring-ring"
+                  disabled={isSubmitting}
+                  className="w-full px-4 py-3 rounded-lg border border-input bg-background focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50"
                   placeholder="Your name"
                 />
               </div>
@@ -71,7 +128,8 @@ const Contact = () => {
                   value={formData.email}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 rounded-lg border border-input bg-background focus:outline-none focus:ring-2 focus:ring-ring"
+                  disabled={isSubmitting}
+                  className="w-full px-4 py-3 rounded-lg border border-input bg-background focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50"
                   placeholder="your.email@example.com"
                 />
               </div>
@@ -86,7 +144,8 @@ const Contact = () => {
                   value={formData.subject}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 rounded-lg border border-input bg-background focus:outline-none focus:ring-2 focus:ring-ring"
+                  disabled={isSubmitting}
+                  className="w-full px-4 py-3 rounded-lg border border-input bg-background focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50"
                   placeholder="What's this about?"
                 />
               </div>
@@ -100,16 +159,24 @@ const Contact = () => {
                   value={formData.message}
                   onChange={handleChange}
                   required
+                  disabled={isSubmitting}
                   rows={6}
-                  className="w-full px-4 py-3 rounded-lg border border-input bg-background focus:outline-none focus:ring-2 focus:ring-ring resize-none"
+                  className="w-full px-4 py-3 rounded-lg border border-input bg-background focus:outline-none focus:ring-2 focus:ring-ring resize-none disabled:opacity-50"
                   placeholder="Tell us what's on your mind..."
                 />
               </div>
               <Button 
                 type="submit"
+                disabled={isSubmitting}
                 className="w-full bg-primary hover:bg-primary/90 text-primary-foreground rounded-full py-6"
               >
-                Send Message
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" /> Sending...
+                  </>
+                ) : (
+                  'Send Message'
+                )}
               </Button>
             </form>
           </div>

@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Save, ArrowLeft, Eye } from 'lucide-react';
+import { Save, ArrowLeft, Eye, Cloud, CloudOff, Clock } from 'lucide-react';
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, DragEndEvent } from '@dnd-kit/core';
 import { SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy, arrayMove } from '@dnd-kit/sortable';
 import AdminLayout from '@/components/admin/AdminLayout';
@@ -19,7 +19,16 @@ import { QuoteBlock } from '@/components/admin/blocks/QuoteBlock';
 import { ListBlock } from '@/components/admin/blocks/ListBlock';
 import { CodeBlock } from '@/components/admin/blocks/CodeBlock';
 import { DividerBlock } from '@/components/admin/blocks/DividerBlock';
+import { LinkBlock } from '@/components/admin/blocks/LinkBlock';
+import { EmbedBlock } from '@/components/admin/blocks/EmbedBlock';
+import { CalloutBlock } from '@/components/admin/blocks/CalloutBlock';
+import { TableBlock } from '@/components/admin/blocks/TableBlock';
+import { ButtonBlock } from '@/components/admin/blocks/ButtonBlock';
+import { GalleryBlock } from '@/components/admin/blocks/GalleryBlock';
+import { ArticlePreview } from '@/components/admin/ArticlePreview';
+import { SEOAnalyzer } from '@/components/admin/SEOAnalyzer';
 import { ContentBlock, createBlock } from '@/components/admin/blocks/types';
+import { useAutosave } from '@/hooks/useAutosave';
 import { useArticleById, useCreateArticle, useUpdateArticle } from '@/hooks/useArticles';
 import { useCategories } from '@/hooks/useCategories';
 import { useAuthors } from '@/hooks/useAuthors';
@@ -45,16 +54,78 @@ const ArticleEditor = () => {
   const [authorId, setAuthorId] = useState('');
   const [introduction, setIntroduction] = useState('');
   const [conclusion, setConclusion] = useState('');
-  const [blocks, setBlocks] = useState<ContentBlock[]>([]);
+  const [blocks, setBlocks] = useState<ContentBlock[]>([createBlock('paragraph')]);
   const [status, setStatus] = useState<'draft' | 'published'>('draft');
   const [featuredImage, setFeaturedImage] = useState('');
   const [tags, setTags] = useState('');
   const [isSaving, setIsSaving] = useState(false);
+  const [showPreview, setShowPreview] = useState(false);
+  const [articleId, setArticleId] = useState<string | null>(id || null);
 
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
   );
+
+  // Data for autosave comparison
+  const articleData = useMemo(() => ({
+    title, slug, subtitle, categoryId, authorId, introduction, conclusion, blocks, status, featuredImage, tags
+  }), [title, slug, subtitle, categoryId, authorId, introduction, conclusion, blocks, status, featuredImage, tags]);
+
+  // Autosave function
+  const performAutosave = async () => {
+    if (!title.trim() || !slug.trim()) return;
+    
+    try {
+      const data = {
+        title, slug, subtitle: subtitle || null, category_id: categoryId || null,
+        author_id: authorId || null, introduction: introduction || null,
+        conclusion: conclusion || null, status: 'draft' as const,
+        featured_image: featuredImage || null,
+        tags: tags ? tags.split(',').map((t) => t.trim()) : [],
+        read_time_minutes: Math.ceil((introduction.length + conclusion.length + blocks.reduce((acc, b) => acc + b.content.length, 0)) / 1000),
+      };
+
+      if (articleId) {
+        await updateArticle.mutateAsync({ id: articleId, ...data });
+        await bulkUpsertSections.mutateAsync({
+          articleId,
+          sections: blocks.map((b, i) => ({ 
+            heading: b.heading || '', 
+            content: b.content, 
+            order_index: i,
+            block_type: b.type,
+            image_url: b.imageUrl || null,
+            block_data: b.blockData || {}
+          })),
+        });
+      } else {
+        const result = await createArticle.mutateAsync(data);
+        setArticleId(result.id);
+        await bulkUpsertSections.mutateAsync({
+          articleId: result.id,
+          sections: blocks.map((b, i) => ({ 
+            heading: b.heading || '', 
+            content: b.content, 
+            order_index: i,
+            block_type: b.type,
+            image_url: b.imageUrl || null,
+            block_data: b.blockData || {}
+          })),
+        });
+      }
+    } catch (error) {
+      console.error('Autosave failed:', error);
+      throw error;
+    }
+  };
+
+  const { status: autosaveStatus, lastSaved, saveNow, hasUnsavedChanges } = useAutosave({
+    data: articleData,
+    onSave: performAutosave,
+    interval: 30000,
+    enabled: isEditing || !!articleId,
+  });
 
   useEffect(() => {
     if (article) {
@@ -68,13 +139,16 @@ const ArticleEditor = () => {
       setStatus(article.status === 'published' ? 'published' : 'draft');
       setFeaturedImage(article.featured_image || '');
       setTags(article.tags?.join(', ') || '');
+      setArticleId(article.id);
       
-      // Convert sections to blocks
+      // Convert sections to blocks with full block data
       const sectionBlocks = article.sections?.sort((a, b) => a.order_index - b.order_index).map((s) => ({
         id: s.id,
-        type: 'paragraph' as const,
+        type: (s.block_type || 'paragraph') as ContentBlock['type'],
         content: s.content,
         heading: s.heading,
+        imageUrl: s.image_url || undefined,
+        blockData: (s.block_data as ContentBlock['blockData']) || {},
       })) || [];
       setBlocks(sectionBlocks.length > 0 ? sectionBlocks : [createBlock('paragraph')]);
     }
@@ -84,7 +158,7 @@ const ArticleEditor = () => {
 
   const handleTitleChange = (value: string) => {
     setTitle(value);
-    if (!isEditing) setSlug(generateSlug(value));
+    if (!isEditing && !articleId) setSlug(generateSlug(value));
   };
 
   const handleDragEnd = (event: DragEndEvent) => {
@@ -127,6 +201,12 @@ const ArticleEditor = () => {
       case 'list': return <ListBlock {...props} />;
       case 'code': return <CodeBlock {...props} />;
       case 'divider': return <DividerBlock />;
+      case 'link': return <LinkBlock {...props} />;
+      case 'embed': return <EmbedBlock {...props} />;
+      case 'callout': return <CalloutBlock {...props} />;
+      case 'table': return <TableBlock {...props} />;
+      case 'button': return <ButtonBlock {...props} />;
+      case 'gallery': return <GalleryBlock {...props} />;
       default: return null;
     }
   };
@@ -138,7 +218,7 @@ const ArticleEditor = () => {
     }
     setIsSaving(true);
     try {
-      const articleData = {
+      const data = {
         title, slug, subtitle: subtitle || null, category_id: categoryId || null,
         author_id: authorId || null, introduction: introduction || null,
         conclusion: conclusion || null, status: status as 'draft' | 'published',
@@ -148,18 +228,26 @@ const ArticleEditor = () => {
         read_time_minutes: Math.ceil((introduction.length + conclusion.length + blocks.reduce((acc, b) => acc + b.content.length, 0)) / 1000),
       };
 
-      let articleId = id;
-      if (isEditing) {
-        await updateArticle.mutateAsync({ id, ...articleData });
+      let savedArticleId = articleId;
+      if (articleId) {
+        await updateArticle.mutateAsync({ id: articleId, ...data });
       } else {
-        const result = await createArticle.mutateAsync(articleData);
-        articleId = result.id;
+        const result = await createArticle.mutateAsync(data);
+        savedArticleId = result.id;
+        setArticleId(result.id);
       }
 
-      if (articleId) {
+      if (savedArticleId) {
         await bulkUpsertSections.mutateAsync({
-          articleId,
-          sections: blocks.map((b, i) => ({ heading: b.heading || '', content: b.content, order_index: i })),
+          articleId: savedArticleId,
+          sections: blocks.map((b, i) => ({ 
+            heading: b.heading || '', 
+            content: b.content, 
+            order_index: i,
+            block_type: b.type,
+            image_url: b.imageUrl || null,
+            block_data: b.blockData || {}
+          })),
         });
       }
 
@@ -172,6 +260,34 @@ const ArticleEditor = () => {
     }
   };
 
+  // Get selected category and author for preview
+  const selectedCategory = categories?.find(c => c.id === categoryId);
+  const selectedAuthor = authors?.find(a => a.id === authorId);
+
+  // Get content for SEO analysis
+  const fullContent = introduction + ' ' + blocks.map(b => b.content).join(' ') + ' ' + conclusion;
+  const contentImages = blocks.filter(b => b.type === 'image').map(b => ({ alt: b.blockData?.alt }));
+
+  // Autosave status indicator
+  const getAutosaveIndicator = () => {
+    switch (autosaveStatus) {
+      case 'saving':
+        return <span className="flex items-center gap-1 text-amber-500"><Cloud className="w-4 h-4 animate-pulse" /> Saving...</span>;
+      case 'saved':
+        return <span className="flex items-center gap-1 text-green-500"><Cloud className="w-4 h-4" /> Saved</span>;
+      case 'error':
+        return <span className="flex items-center gap-1 text-red-500"><CloudOff className="w-4 h-4" /> Save failed</span>;
+      case 'unsaved':
+        return <span className="flex items-center gap-1 text-muted-foreground"><CloudOff className="w-4 h-4" /> Unsaved changes</span>;
+      default:
+        return lastSaved ? (
+          <span className="flex items-center gap-1 text-muted-foreground">
+            <Clock className="w-4 h-4" /> Last saved {lastSaved.toLocaleTimeString()}
+          </span>
+        ) : null;
+    }
+  };
+
   if (articleLoading && isEditing) {
     return <AdminLayout title="Loading..."><div className="flex items-center justify-center py-12"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div></div></AdminLayout>;
   }
@@ -179,8 +295,18 @@ const ArticleEditor = () => {
   return (
     <AdminLayout title={isEditing ? 'Edit Article' : 'New Article'}>
       <div className="mb-6 flex items-center justify-between">
-        <Button variant="ghost" onClick={() => navigate('/admin/articles')}><ArrowLeft className="w-4 h-4 mr-2" /> Back</Button>
-        <Button onClick={handleSave} disabled={isSaving}><Save className="w-4 h-4 mr-2" />{isSaving ? 'Saving...' : 'Save'}</Button>
+        <div className="flex items-center gap-4">
+          <Button variant="ghost" onClick={() => navigate('/admin/articles')}><ArrowLeft className="w-4 h-4 mr-2" /> Back</Button>
+          <div className="text-sm">{getAutosaveIndicator()}</div>
+        </div>
+        <div className="flex items-center gap-2">
+          <Button variant="outline" onClick={() => setShowPreview(true)}>
+            <Eye className="w-4 h-4 mr-2" /> Preview
+          </Button>
+          <Button onClick={handleSave} disabled={isSaving}>
+            <Save className="w-4 h-4 mr-2" />{isSaving ? 'Saving...' : 'Save'}
+          </Button>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -228,8 +354,32 @@ const ArticleEditor = () => {
             <div><Label>Author</Label><Select value={authorId} onValueChange={setAuthorId}><SelectTrigger><SelectValue placeholder="Select author" /></SelectTrigger><SelectContent>{authors?.map((author) => <SelectItem key={author.id} value={author.id}>{author.name}</SelectItem>)}</SelectContent></Select></div>
             <div><Label>Tags</Label><Input value={tags} onChange={(e) => setTags(e.target.value)} placeholder="ai, tech, news" /></div>
           </div>
+
+          {/* SEO Analyzer */}
+          <SEOAnalyzer 
+            title={title}
+            metaDescription={subtitle}
+            content={fullContent}
+            images={contentImages}
+            slug={slug}
+          />
         </div>
       </div>
+
+      {/* Preview Modal */}
+      <ArticlePreview
+        open={showPreview}
+        onClose={() => setShowPreview(false)}
+        title={title}
+        subtitle={subtitle}
+        introduction={introduction}
+        conclusion={conclusion}
+        blocks={blocks}
+        featuredImage={featuredImage}
+        category={selectedCategory?.name}
+        author={selectedAuthor ? { name: selectedAuthor.name, avatar: selectedAuthor.avatar_url || '' } : undefined}
+        tags={tags ? tags.split(',').map(t => t.trim()) : []}
+      />
     </AdminLayout>
   );
 };

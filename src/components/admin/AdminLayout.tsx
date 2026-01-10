@@ -11,7 +11,8 @@ import {
   X,
   Image,
   Settings,
-  Mail
+  Mail,
+  MessageSquare
 } from 'lucide-react';
 import { useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
@@ -35,6 +36,7 @@ const AdminLayout = ({ children, title }: AdminLayoutProps) => {
     { href: '/admin/categories', label: 'Categories', icon: Tags },
     { href: '/admin/media', label: 'Media', icon: Image },
     { href: '/admin/subscribers', label: 'Subscribers', icon: Mail },
+    { href: '/admin/contact-submissions', label: 'Messages', icon: MessageSquare },
     { href: '/admin/settings', label: 'Settings', icon: Settings },
   ];
 
