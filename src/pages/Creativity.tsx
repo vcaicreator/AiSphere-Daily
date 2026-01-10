@@ -1,11 +1,10 @@
 import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 import ArticleCard from "@/components/ArticleCard";
-import { articles } from "@/data/articles";
+import { usePublishedArticles } from "@/hooks/useArticles";
 
 const Creativity = () => {
-  const creativityArticles = articles.filter(article => 
-    article.category.toLowerCase() === "creativity"
-  );
+  const { data: articles, isLoading } = usePublishedArticles();
 
   return (
     <div className="min-h-screen bg-background animate-fade-in">
@@ -15,44 +14,66 @@ const Creativity = () => {
         {/* Hero Section */}
         <div className="mb-16 text-center space-y-6">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight animate-slide-down">
-            Creativity & Expression
+            AI News & Insights
           </h1>
           <p className="text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed animate-slide-up stagger-1">
-            Unlock your creative potential and explore the art of authentic self-expression. 
-            From overcoming blocks to building sustainable creative practices, discover insights that nurture your artistic journey.
+            Stay up to date with the latest developments in artificial intelligence, machine learning, 
+            and technology innovation. Discover insights that shape the future.
           </p>
         </div>
 
         {/* Articles Grid */}
         <section>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {creativityArticles.map((article, index) => (
-              <div key={article.id} className={`animate-slide-up stagger-${Math.min(index + 2, 6)}`}>
-                <ArticleCard {...article} />
-              </div>
-            ))}
-          </div>
+          {isLoading ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[...Array(6)].map((_, i) => (
+                <div key={i} className="animate-pulse bg-muted rounded-2xl h-80" />
+              ))}
+            </div>
+          ) : articles?.length === 0 ? (
+            <div className="text-center py-12">
+              <p className="text-muted-foreground">No articles published yet. Check back soon!</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {articles?.map((article, index) => (
+                <div key={article.id} className={`animate-slide-up stagger-${Math.min(index + 2, 6)}`}>
+                  <ArticleCard
+                    id={article.slug}
+                    title={article.title}
+                    subtitle={article.subtitle || ''}
+                    category={article.category?.name || 'Uncategorized'}
+                    date={article.published_at ? new Date(article.published_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : ''}
+                    readTime={`${article.read_time_minutes || 5} min`}
+                    image={article.featured_image || 'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800'}
+                    author={{ name: article.author?.name || 'AiSphere Daily', avatar: article.author?.avatar_url || '', bio: article.author?.bio || '' }}
+                  />
+                </div>
+              ))}
+            </div>
+          )}
         </section>
 
-        {/* About Creativity */}
-        <section className="mt-16 rounded-2xl bg-card p-8 md:p-12">
+        {/* About AI News */}
+        <section className="mt-16 rounded-2xl glass-card p-8 md:p-12">
           <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl font-bold mb-6">Nurturing Creative Spirit</h2>
+            <h2 className="text-3xl font-bold mb-6">The AI Revolution</h2>
             <div className="space-y-4 text-muted-foreground">
               <p>
-                Creativity isn't reserved for artists—it's a fundamental human capacity that enriches every aspect of life. 
-                Whether you're writing, designing, problem-solving, or simply reimagining your daily routine, 
-                creative thinking opens doors to innovation and fulfillment.
+                Artificial intelligence is transforming every aspect of our world—from how we work and communicate 
+                to how we solve humanity's biggest challenges. We're here to help you navigate this exciting frontier.
               </p>
               <p>
-                We explore the practices, mindsets, and tools that help creatives of all kinds stay inspired, 
-                overcome obstacles, and build sustainable creative lives. From finding your unique voice to 
-                navigating the practical challenges of creative work, we're here to support your journey.
+                Our coverage spans the latest breakthroughs in machine learning, practical AI tools and applications, 
+                ethical considerations in AI development, and the business implications of this technological revolution. 
+                Stay informed, stay ahead.
               </p>
             </div>
           </div>
         </section>
       </main>
+
+      <Footer />
     </div>
   );
 };
