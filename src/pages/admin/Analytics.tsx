@@ -9,7 +9,8 @@ import {
   Tablet,
   Globe,
   TrendingUp,
-  Activity
+  Activity,
+  RefreshCw
 } from 'lucide-react';
 import AdminLayout from '@/components/admin/AdminLayout';
 import { Button } from '@/components/ui/button';
@@ -49,15 +50,31 @@ const dateRangeOptions: { value: DateRange; label: string }[] = [
 
 const AdminAnalytics = () => {
   const [dateRange, setDateRange] = useState<DateRange>('7d');
+  const [isRefreshing, setIsRefreshing] = useState(false);
   
-  const { data: pageViewStats, isLoading: loadingPageViews } = usePageViewStats(dateRange);
-  const { data: topPages } = useTopPages(dateRange);
-  const { data: deviceBreakdown } = useDeviceBreakdown(dateRange);
-  const { data: browserBreakdown } = useBrowserBreakdown(dateRange);
-  const { data: referrerBreakdown } = useReferrerBreakdown(dateRange);
-  const { data: realtimeData } = useRealtimeVisitors();
-  const { data: eventStats } = useEventStats(dateRange);
-  const { data: topArticles } = useTopArticles(dateRange);
+  const { data: pageViewStats, isLoading: loadingPageViews, refetch: refetchPageViews } = usePageViewStats(dateRange);
+  const { data: topPages, refetch: refetchTopPages } = useTopPages(dateRange);
+  const { data: deviceBreakdown, refetch: refetchDevice } = useDeviceBreakdown(dateRange);
+  const { data: browserBreakdown, refetch: refetchBrowser } = useBrowserBreakdown(dateRange);
+  const { data: referrerBreakdown, refetch: refetchReferrer } = useReferrerBreakdown(dateRange);
+  const { data: realtimeData, refetch: refetchRealtime } = useRealtimeVisitors();
+  const { data: eventStats, refetch: refetchEvents } = useEventStats(dateRange);
+  const { data: topArticles, refetch: refetchArticles } = useTopArticles(dateRange);
+
+  const handleRefresh = async () => {
+    setIsRefreshing(true);
+    await Promise.all([
+      refetchPageViews(),
+      refetchTopPages(),
+      refetchDevice(),
+      refetchBrowser(),
+      refetchReferrer(),
+      refetchRealtime(),
+      refetchEvents(),
+      refetchArticles(),
+    ]);
+    setIsRefreshing(false);
+  };
 
   const getDeviceIcon = (name: string) => {
     switch (name.toLowerCase()) {
@@ -84,8 +101,8 @@ const AdminAnalytics = () => {
           </div>
         </div>
 
-        {/* Date Range Selector */}
-        <div className="flex gap-2">
+        {/* Date Range Selector & Refresh */}
+        <div className="flex gap-2 items-center">
           {dateRangeOptions.map((option) => (
             <Button
               key={option.value}
@@ -96,6 +113,16 @@ const AdminAnalytics = () => {
               {option.label}
             </Button>
           ))}
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleRefresh}
+            disabled={isRefreshing}
+            className="ml-2"
+          >
+            <RefreshCw className={`w-4 h-4 mr-1 ${isRefreshing ? 'animate-spin' : ''}`} />
+            Refresh
+          </Button>
         </div>
       </div>
 
