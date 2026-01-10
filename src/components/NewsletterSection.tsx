@@ -1,22 +1,49 @@
 import { useState } from "react";
 import { Send, Loader2, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 const NewsletterSection = () => {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "success">("idle");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const isValidEmail = (email: string) => {
+    return /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/.test(email);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email) return;
+
+    const trimmedEmail = email.trim().toLowerCase();
+    
+    if (!isValidEmail(trimmedEmail)) {
+      toast.error("Please enter a valid email address");
+      return;
+    }
     
     setStatus("loading");
-    // Simulate API call
-    setTimeout(() => {
-      setStatus("success");
-      setEmail("");
-      setTimeout(() => setStatus("idle"), 3000);
-    }, 1500);
+    
+    const { error } = await supabase
+      .from('newsletter_subscribers')
+      .insert({ email: trimmedEmail });
+    
+    if (error) {
+      if (error.code === '23505') {
+        toast.info("You're already subscribed!");
+      } else {
+        toast.error("Failed to subscribe. Please try again.");
+        console.error('Newsletter subscription error:', error);
+      }
+      setStatus("idle");
+      return;
+    }
+    
+    setStatus("success");
+    setEmail("");
+    toast.success("Successfully subscribed!");
+    setTimeout(() => setStatus("idle"), 3000);
   };
 
   return (
