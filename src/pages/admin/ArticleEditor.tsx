@@ -25,6 +25,32 @@ import { CalloutBlock } from '@/components/admin/blocks/CalloutBlock';
 import { TableBlock } from '@/components/admin/blocks/TableBlock';
 import { ButtonBlock } from '@/components/admin/blocks/ButtonBlock';
 import { GalleryBlock } from '@/components/admin/blocks/GalleryBlock';
+// New block imports
+import { AccordionBlock } from '@/components/admin/blocks/AccordionBlock';
+import { ToggleBlock } from '@/components/admin/blocks/ToggleBlock';
+import { TabsBlock } from '@/components/admin/blocks/TabsBlock';
+import { SpoilerBlock } from '@/components/admin/blocks/SpoilerBlock';
+import { ColumnsBlock } from '@/components/admin/blocks/ColumnsBlock';
+import { VideoBlock } from '@/components/admin/blocks/VideoBlock';
+import { AudioBlock } from '@/components/admin/blocks/AudioBlock';
+import { FileBlock } from '@/components/admin/blocks/FileBlock';
+import { PdfBlock } from '@/components/admin/blocks/PdfBlock';
+import { TimelineBlock } from '@/components/admin/blocks/TimelineBlock';
+import { ComparisonBlock } from '@/components/admin/blocks/ComparisonBlock';
+import { PricingBlock } from '@/components/admin/blocks/PricingBlock';
+import { TestimonialBlock } from '@/components/admin/blocks/TestimonialBlock';
+import { TeamBlock } from '@/components/admin/blocks/TeamBlock';
+import { StatsBlock } from '@/components/admin/blocks/StatsBlock';
+import { ProgressBlock } from '@/components/admin/blocks/ProgressBlock';
+import { AlertBlock } from '@/components/admin/blocks/AlertBlock';
+import { CardBlock } from '@/components/admin/blocks/CardBlock';
+import { SocialBlock } from '@/components/admin/blocks/SocialBlock';
+import { RelatedBlock } from '@/components/admin/blocks/RelatedBlock';
+import { AuthorBoxBlock } from '@/components/admin/blocks/AuthorBoxBlock';
+import { NewsletterBlock } from '@/components/admin/blocks/NewsletterBlock';
+import { MapBlock } from '@/components/admin/blocks/MapBlock';
+import { MathBlock } from '@/components/admin/blocks/MathBlock';
+import { MermaidBlock } from '@/components/admin/blocks/MermaidBlock';
 import { ArticlePreview } from '@/components/admin/ArticlePreview';
 import { SEOAnalyzer } from '@/components/admin/SEOAnalyzer';
 import { ContentBlock, createBlock } from '@/components/admin/blocks/types';
@@ -193,6 +219,7 @@ const ArticleEditor = () => {
 
   const renderBlock = (block: ContentBlock, index: number) => {
     const props = { block, onChange: (b: ContentBlock) => updateBlock(index, b) };
+    const updateProps = { block, onUpdate: (b: ContentBlock) => updateBlock(index, b), onChange: (b: ContentBlock) => updateBlock(index, b) };
     switch (block.type) {
       case 'paragraph': return <ParagraphBlock {...props} />;
       case 'heading': return <HeadingBlock {...props} />;
@@ -207,6 +234,32 @@ const ArticleEditor = () => {
       case 'table': return <TableBlock {...props} />;
       case 'button': return <ButtonBlock {...props} />;
       case 'gallery': return <GalleryBlock {...props} />;
+      // New blocks
+      case 'accordion': return <AccordionBlock {...updateProps} />;
+      case 'toggle': return <ToggleBlock {...updateProps} />;
+      case 'tabs': return <TabsBlock {...updateProps} />;
+      case 'spoiler': return <SpoilerBlock {...updateProps} />;
+      case 'columns': return <ColumnsBlock {...updateProps} />;
+      case 'video': return <VideoBlock {...updateProps} />;
+      case 'audio': return <AudioBlock {...updateProps} />;
+      case 'file': return <FileBlock {...updateProps} />;
+      case 'pdf': return <PdfBlock {...updateProps} />;
+      case 'timeline': return <TimelineBlock {...updateProps} />;
+      case 'comparison': return <ComparisonBlock {...updateProps} />;
+      case 'pricing': return <PricingBlock {...updateProps} />;
+      case 'testimonial': return <TestimonialBlock {...updateProps} />;
+      case 'team': return <TeamBlock {...updateProps} />;
+      case 'stats': return <StatsBlock {...updateProps} />;
+      case 'progress': return <ProgressBlock {...updateProps} />;
+      case 'alert': return <AlertBlock {...updateProps} />;
+      case 'card': return <CardBlock {...updateProps} />;
+      case 'social': return <SocialBlock {...updateProps} />;
+      case 'related': return <RelatedBlock {...updateProps} />;
+      case 'authorbox': return <AuthorBoxBlock {...updateProps} />;
+      case 'newsletter': return <NewsletterBlock {...updateProps} />;
+      case 'map': return <MapBlock {...updateProps} />;
+      case 'math': return <MathBlock {...updateProps} />;
+      case 'mermaid': return <MermaidBlock {...updateProps} />;
       default: return null;
     }
   };
