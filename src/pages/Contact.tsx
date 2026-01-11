@@ -18,13 +18,9 @@ const Contact = () => {
   useEffect(() => {
     // Fetch admin email from settings
     const fetchAdminEmail = async () => {
-      const { data } = await supabase
-        .from('site_settings')
-        .select('value')
-        .eq('key', 'contact_email')
-        .single();
-      
-      if (data?.value && typeof data.value === 'object' && 'value' in data.value) {
+      const { data } = await supabase.from("site_settings").select("value").eq("key", "contact_email").single();
+
+      if (data?.value && typeof data.value === "object" && "value" in data.value) {
         setAdminEmail((data.value as { value: string }).value);
       }
     };
@@ -37,37 +33,35 @@ const Contact = () => {
 
     try {
       // Save to database
-      const { error: dbError } = await supabase
-        .from('contact_submissions')
-        .insert({
-          name: formData.name,
-          email: formData.email,
-          subject: formData.subject,
-          message: formData.message,
-        });
+      const { error: dbError } = await supabase.from("contact_submissions").insert({
+        name: formData.name,
+        email: formData.email,
+        subject: formData.subject,
+        message: formData.message,
+      });
 
       if (dbError) throw dbError;
 
       // Send email notifications via edge function
       try {
-        await supabase.functions.invoke('send-contact-email', {
+        await supabase.functions.invoke("send-contact-email", {
           body: {
             name: formData.name,
             email: formData.email,
             subject: formData.subject,
             message: formData.message,
             adminEmail: adminEmail || undefined,
-          }
+          },
         });
       } catch (emailError) {
         // Email sending is optional, don't fail the whole submission
-        console.error('Email sending failed:', emailError);
+        console.error("Email sending failed:", emailError);
       }
 
       toast.success("Message sent! We'll get back to you soon.");
       setFormData({ name: "", email: "", subject: "", message: "" });
     } catch (error: any) {
-      console.error('Submission error:', error);
+      console.error("Submission error:", error);
       toast.error("Failed to send message. Please try again.");
     } finally {
       setIsSubmitting(false);
@@ -75,22 +69,20 @@ const Contact = () => {
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     }));
   };
 
   return (
     <div className="min-h-screen bg-background animate-fade-in">
       <Header />
-      
+
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Hero Section */}
         <div className="mb-16 text-center space-y-6">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight animate-slide-down">
-            Get in Touch
-          </h1>
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight animate-slide-down">Get in Touch</h1>
           <p className="text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed animate-slide-up stagger-1">
             Have a question, suggestion, or just want to say hello? We'd love to hear from you.
           </p>
@@ -165,7 +157,7 @@ const Contact = () => {
                   placeholder="Tell us what's on your mind..."
                 />
               </div>
-              <Button 
+              <Button
                 type="submit"
                 disabled={isSubmitting}
                 className="w-full bg-primary hover:bg-primary/90 text-primary-foreground rounded-full py-6"
@@ -175,7 +167,7 @@ const Contact = () => {
                     <Loader2 className="w-4 h-4 mr-2 animate-spin" /> Sending...
                   </>
                 ) : (
-                  'Send Message'
+                  "Send Message"
                 )}
               </Button>
             </form>
@@ -192,7 +184,7 @@ const Contact = () => {
                   </div>
                   <div>
                     <h3 className="font-semibold mb-1">Email</h3>
-                    <p className="text-muted-foreground">hello@perspective.blog</p>
+                    <p className="text-muted-foreground">hello@aispheredaily.blog</p>
                     <p className="text-muted-foreground text-sm">We'll respond within 24 hours</p>
                   </div>
                 </div>
@@ -202,8 +194,8 @@ const Contact = () => {
                   </div>
                   <div>
                     <h3 className="font-semibold mb-1">Location</h3>
-                    <p className="text-muted-foreground">San Francisco, CA</p>
-                    <p className="text-muted-foreground text-sm">Remote-first team</p>
+                    <p className="text-muted-foreground">Davangere, India</p>
+                    <p className="text-muted-foreground text-sm">Remote First Team</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-4">
@@ -212,8 +204,8 @@ const Contact = () => {
                   </div>
                   <div>
                     <h3 className="font-semibold mb-1">Phone</h3>
-                    <p className="text-muted-foreground">+1 (555) 123-4567</p>
-                    <p className="text-muted-foreground text-sm">Mon-Fri, 9am-5pm PST</p>
+                    <p className="text-muted-foreground">+91 94486 67576</p>
+                    <p className="text-muted-foreground text-sm">Mon-Fri, 9am-5pm IST</p>
                   </div>
                 </div>
               </div>
@@ -237,7 +229,8 @@ const Contact = () => {
                 <div>
                   <h4 className="font-semibold mb-1">Can I republish your content?</h4>
                   <p className="text-muted-foreground">
-                    Please contact us for permissions and licensing. We're generally open to republishing with proper attribution.
+                    Please contact us for permissions and licensing. We're generally open to republishing with proper
+                    attribution.
                   </p>
                 </div>
               </div>
