@@ -173,17 +173,22 @@ export interface ContentBlock {
     };
     
     // Stats block
-    statsItems?: {
+    stats?: {
       id: string;
       value: string;
       label: string;
       prefix?: string;
       suffix?: string;
-      icon?: string;
     }[];
     statsLayout?: 'row' | 'grid';
     
     // Progress block
+    items?: {
+      id: string;
+      label: string;
+      value: number;
+      color?: string;
+    }[];
     progressValue?: number;
     progressMax?: number;
     progressLabel?: string;
@@ -191,11 +196,15 @@ export interface ContentBlock {
     progressShowValue?: boolean;
     
     // Alert block
-    alertType?: 'info' | 'success' | 'warning' | 'error';
-    alertTitle?: string;
+    alertType?: 'info' | 'success' | 'warning' | 'error' | 'neutral';
+    title?: string;
     alertDismissible?: boolean;
     
     // Card block
+    description?: string;
+    icon?: string;
+    imageUrl?: string;
+    linkText?: string;
     cardTitle?: string;
     cardDescription?: string;
     cardImage?: string;
@@ -203,10 +212,18 @@ export interface ContentBlock {
     cardIcon?: string;
     
     // Social block
+    platforms?: string[];
     socialPlatforms?: ('twitter' | 'facebook' | 'linkedin' | 'pinterest' | 'reddit' | 'email')[];
     socialStyle?: 'buttons' | 'icons';
     
     // Related articles block
+    relatedItems?: {
+      id: string;
+      articleId?: string;
+      customTitle?: string;
+      customUrl?: string;
+    }[];
+    layout?: 'grid' | 'list' | 'cards';
     relatedArticleIds?: string[];
     relatedLayout?: 'grid' | 'list';
     
@@ -214,23 +231,36 @@ export interface ContentBlock {
     authorId?: string;
     showBio?: boolean;
     showSocial?: boolean;
+    showAvatar?: boolean;
+    style?: string;
     
     // Newsletter block
+    buttonText?: string;
+    placeholder?: string;
+    backgroundColor?: string;
     newsletterTitle?: string;
     newsletterDescription?: string;
     newsletterButtonText?: string;
     
     // Map block
+    address?: string;
+    latitude?: string;
+    longitude?: string;
+    zoom?: string;
+    height?: string;
+    mapType?: string;
     mapUrl?: string;
     mapAddress?: string;
     mapZoom?: number;
     mapHeight?: string;
     
     // Math block
+    displayMode?: 'inline' | 'block';
     mathFormula?: string;
     mathDisplay?: 'inline' | 'block';
     
     // Mermaid block
+    theme?: 'default' | 'dark' | 'forest' | 'neutral';
     mermaidCode?: string;
     mermaidTheme?: 'default' | 'dark' | 'forest' | 'neutral';
   };
@@ -269,11 +299,11 @@ export const createBlock = (type: BlockType): ContentBlock => {
     testimonial: { testimonialRating: 5 },
     team: { teamMember: { name: '', role: '' } },
     stats: { statsItems: [{ id: crypto.randomUUID(), value: '100', label: 'Stat' }], statsLayout: 'row' },
-    progress: { progressValue: 50, progressMax: 100, progressShowValue: true },
-    alert: { alertType: 'info', alertDismissible: false },
+    progress: { items: [{ id: crypto.randomUUID(), label: 'Progress', value: 50, color: '#3b82f6' }] },
+    alert: { alertType: 'info' as const, alertDismissible: false },
     card: {},
-    social: { socialPlatforms: ['twitter', 'facebook', 'linkedin'], socialStyle: 'buttons' },
-    related: { relatedLayout: 'grid' },
+    social: { platforms: ['facebook', 'twitter', 'linkedin'], socialStyle: 'buttons' },
+    related: { relatedItems: [], layout: 'grid' as const },
     authorbox: { showBio: true, showSocial: true },
     newsletter: { newsletterTitle: 'Subscribe to our newsletter', newsletterButtonText: 'Subscribe' },
     map: { mapZoom: 15, mapHeight: '400px' },
